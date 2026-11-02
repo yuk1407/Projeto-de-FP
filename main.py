@@ -150,16 +150,10 @@ def atualizar():
     usuarios.remove(usuario_encontrado)
     usuarios.append(usuario_atualizado)
 
-    with open("dados.txt", "w", encoding="utf8") as arquivo:
-        for usuario in usuarios:
-            arquivo.write(f"Nome: {usuario['nome']}\n")
-            arquivo.write(f"Matrícula: {usuario['matricula']}\n")
-            arquivo.write(f"Perfil: {usuario['perfil']}\n")
-            arquivo.write(f"Horário: {usuario['horario']}\n")
-            arquivo.write(f"Máquina: {usuario['maquina']}\n")
-            arquivo.write(f"Resultado: {usuario['resultado']}\n")
-            arquivo.write(f"Observações: {usuario['observacoes']}\n")
-            arquivo.write("-" * 30 + "\n")
+    with open("dados.txt", "w") as arquivo:
+            for usuario in usuarios:
+                arquivo.write(f"{usuario['nome']},{usuario['matricula']},{usuario['perfil']},{usuario['horario']},{usuario['maquina']},{usuario['resultado']},{usuario['observacoes']}\n")
+    
 
 #funcao de deletar
 def deletar():
@@ -195,16 +189,10 @@ def deletar():
 
     usuarios.remove(usuario_encontrado) # deleta oque foi encontrado
 
-    with open("dados.txt", "w", encoding="utf8") as arquivo:
+    with open("dados.txt", "w") as arquivo: # e adiciona os usuarios restantes no arquivo
         for usuario in usuarios:
-            arquivo.write(f"Nome: {usuario['nome']}\n")
-            arquivo.write(f"Matrícula: {usuario['matricula']}\n")
-            arquivo.write(f"Perfil: {usuario['perfil']}\n")
-            arquivo.write(f"Horário: {usuario['horario']}\n")
-            arquivo.write(f"Máquina: {usuario['maquina']}\n")
-            arquivo.write(f"Resultado: {usuario['resultado']}\n")
-            arquivo.write(f"Observações: {usuario['observacoes']}\n")
-            arquivo.write("-" * 30 + "\n")
+            arquivo.write(f"{usuario['nome']},{usuario['matricula']},{usuario['perfil']},{usuario['horario']},{usuario['maquina']},{usuario['resultado']},{usuario['observacoes']}\n")
+
     print("Usuário deletado com sucesso.")
 
 
