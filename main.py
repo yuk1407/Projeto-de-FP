@@ -1,16 +1,19 @@
-import os #oi andré - PEDRO MIGUEL 
+import os
 from datetime import datetime
 
 dados = {}
+acessos = []
+
 PERFIS = ("estudante", "professor", "administrador")
 
 
+# LIMPAR TERMINAL
 def limpar():
     os.system("cls" if os.name == "nt" else "clear")
 
 
 # CONSULTAR OS DADOS DO ARQUIVO
-def consultar(): #FUNÇÃO ESSENCIAL PARA O A MANIPULAÇÃO DE ARQUIVO
+def consultar():
     dados.clear()
 
     try:
@@ -18,17 +21,22 @@ def consultar(): #FUNÇÃO ESSENCIAL PARA O A MANIPULAÇÃO DE ARQUIVO
             for linha in arquivo:
                 partes = linha.strip().split(",", 6)
 
-                if len(partes) < 7: # DIVIDE EM PARTESS
-                    continue
+                if len(partes) == 7:
+                    # Formato antigo: possui máquina no cadastro
+                    matricula, nome, perfil, horario, acesso, maquina_antiga, observacoes = partes
 
-                matricula, nome, perfil, horario, acesso, maquina, observacoes = partes #ATRIBUI NAS VARIAVEIS
+                elif len(partes) == 6:
+                    # Formato novo: não possui máquina fixa
+                    matricula, nome, perfil, horario, acesso, observacoes = partes
+
+                else:
+                    continue
 
                 dados[matricula] = {
                     "nome": nome,
                     "perfil": perfil,
                     "horario": horario,
                     "acesso": acesso,
-                    "maquina": maquina,
                     "observacoes": observacoes
                 }
 
@@ -38,30 +46,86 @@ def consultar(): #FUNÇÃO ESSENCIAL PARA O A MANIPULAÇÃO DE ARQUIVO
 
 # SALVAR ALTERAÇÕES NO ARQUIVO
 def salvar():
-    with open("arquivos.txt", "w", encoding="utf8") as arquivo: #PRINT NO ARQUIVO TXT
+    with open("arquivos.txt", "w", encoding="utf8") as arquivo:
         for matricula, info in dados.items():
             arquivo.write(
                 f"{matricula},{info['nome']},{info['perfil']},"
                 f"{info['horario']},{info['acesso']},"
-                f"{info['maquina']},{info['observacoes']}\n"
+                f"{info['observacoes']}\n"
             )
 
 
-def salvarRelatorio(relatorio): # PARTE DO RELATORIO
+# CONSULTAR HISTÓRICO DE ACESSOS
+def consultarAcessos():
+    acessos.clear()
+
+    try:
+        with open("acessos.txt", "r", encoding="utf8") as arquivo:
+            for linha in arquivo:
+                partes = linha.strip().split(",", 3)
+
+                if len(partes) != 4:
+                    continue
+
+                matricula, data_hora, maquina, resultado = partes
+
+                acessos.append({
+                    "matricula": matricula,
+                    "data_hora": data_hora,
+                    "maquina": maquina,
+                    "resultado": resultado
+                })
+
+    except FileNotFoundError:
+        pass
+
+
+# REGISTRAR CADA TENTATIVA DE ACESSO
+def registrarAcesso(matricula, maquina, resultado):
+    registro = {
+        "matricula": matricula,
+        "data_hora": agora(),
+        "maquina": maquina,
+        "resultado": resultado
+    }
+
+    acessos.append(registro)
+
+    with open("acessos.txt", "a", encoding="utf8") as arquivo:
+        arquivo.write(
+            f"{registro['matricula']},{registro['data_hora']},"
+            f"{registro['maquina']},{registro['resultado']}\n"
+        )
+
+
+# IDENTIFICAR A ÚLTIMA MÁQUINA UTILIZADA
+def ultimaMaquina(matricula):
+    for acesso in reversed(acessos):
+        if (
+            acesso["matricula"] == matricula
+            and acesso["resultado"] == "sucesso"
+        ):
+            return acesso["maquina"]
+
+    return "-"
+
+
+# SALVAR RELATÓRIO
+def salvarRelatorio(relatorio):
     with open("relatorio.txt", "w", encoding="utf8") as arquivo:
         arquivo.write(relatorio)
 
 
-def agora(): #TEMPO DA BIBLIOTECA DATATIME
+# DATA E HORÁRIO ATUAL
+def agora():
     return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 
-# LOGIN
-def verificar_login(nome, matricula): 
-    """Retorna o perfil se nome e matrícula baterem; senão, None."""
+# VERIFICAR LOGIN
+def verificar_login(nome, matricula):
     consultar()
 
-    info = dados.get(matricula) #COOMPARAÇÃO
+    info = dados.get(matricula)
 
     if info and info["nome"].lower() == nome.lower():
         return info["perfil"].lower()
@@ -69,96 +133,139 @@ def verificar_login(nome, matricula):
     return None
 
 
-def primeiro_acesso(): 
-    """Se não existir nenhum usuário, cria o primeiro administrador."""
+# CRIAR PRIMEIRO ADMINISTRADOR
+def primeiro_acesso():
     consultar()
 
     if dados:
         return
 
-    print("\nNenhum usuário cadastrado. Vamos criar o primeiro administrador.")
-    matricula = input("Matrícula: ")
-    nome = input("Nome: ")
+    print("\nNenhum usuário cadastrado.")
+    print("Vamos criar o primeiro administrador.")
+
+    matricula = input("Matrícula: ").strip()
+
+    while len(matricula) < 4:
+        print("A matrícula deve ter pelo menos 4 caracteres.")
+        matricula = input("Matrícula: ").strip()
+
+    nome = input("Nome do administrador: ").strip()
+
+    while not nome:
+        print("O nome não pode ficar vazio.")
+        nome = input("Nome do administrador: ").strip()
 
     dados[matricula] = {
         "nome": nome,
         "perfil": "administrador",
         "horario": "24h",
-        "acesso": agora(),
-        "maquina": "-",
+        "acesso": "Nunca acessou",
         "observacoes": ""
     }
+
     salvar()
+
     print("Administrador criado com sucesso.")
 
 
-def login(): 
-    """Retorna (matricula, perfil) se o login der certo; senão, (None, None)."""
-    for tentativa in range(3): # TENTATIVAS
-        nome = input("Digite seu nome: ")
-        matricula = input("Digite sua matrícula: ")
+# LOGIN
+def login():
+    for tentativa in range(3):
+
+        nome = input("\nDigite seu nome: ").strip()
+        matricula = input("Digite sua matrícula: ").strip()
+
+        maquina = os.environ.get("COMPUTERNAME", "MAQUINA-DESCONHECIDA")
 
         perfil = verificar_login(nome, matricula)
 
         if perfil in PERFIS:
-            # registra o último acesso
+
+            # Atualiza a data do último acesso
             dados[matricula]["acesso"] = agora()
             salvar()
+
+            # Registra o acesso bem-sucedido
+            registrarAcesso(matricula, maquina, "sucesso")
+
+            print("\nLogin realizado com sucesso!")
+
             return matricula, perfil
+
+        # Registra a tentativa que falhou
+        registrarAcesso(matricula, maquina, "falha")
 
         print("\nNome ou matrícula incorretos!")
 
-    print("Número máximo de tentativas atingido.")
+    print("\nNúmero máximo de tentativas atingido.")
+
     return None, None
 
-
-# FUNÇÕES DO SISTEMA
-def exibir(matricula, info): #VISUALIZAR 
-    matricula_oculta = matricula[:2] + "*" * max(0, len(matricula) - 2) #ESCONDER A MATRICULA
+# EXIBIR USUÁRIO
+def exibir(matricula, info):
+    matricula_oculta = (
+        matricula[:2] + "*" * max(0, len(matricula) - 2)
+    )
 
     print("\n-------------------------")
     print("Nome:", info["nome"])
-    print("Matricula:", matricula_oculta)
+    print("Matrícula:", matricula_oculta)
     print("Perfil:", info["perfil"])
-    print("Horario:", info["horario"])
+    print("Horário:", info["horario"])
     print("Último acesso:", info["acesso"])
-    print("Máquina:", info["maquina"])
-    print("Observacoes:", info["observacoes"])
+    print("Última máquina:", ultimaMaquina(matricula))
+    print("Observações:", info["observacoes"])
     print("-------------------------")
 
 
-# REGISTRAR USUÁRIO (ADM)
+# REGISTRAR USUÁRIO (ADMINISTRADOR)
 def registrar():
     limpar()
     consultar()
 
-    matricula = input("Qual a matrícula do usuário: ")
+    matricula = input("Qual a matrícula do usuário: ").strip()
+
+    while len(matricula) < 4:
+        print("A matrícula deve ter pelo menos 4 caracteres.")
+        matricula = input("Qual a matrícula do usuário: ").strip()
 
     if matricula in dados:
         print("O usuário já foi cadastrado.")
         return
 
-    nome = input("Nome: ")
+    nome = input("Nome: ").strip()
 
-    perfil = input("Perfil (estudante, professor, administrador): ").lower()
+    while not nome:
+        print("O nome não pode ficar vazio.")
+        nome = input("Nome: ").strip()
+
+    perfil = input(
+        "Perfil (estudante, professor, administrador): "
+    ).lower().strip()
+
     while perfil not in PERFIS:
         print("Perfil inválido.")
-        perfil = input("Perfil (estudante, professor, administrador): ").lower()
+        perfil = input(
+            "Perfil (estudante, professor, administrador): "
+        ).lower().strip()
 
-    dados[matricula] = { #ATIBUIÇÃO DAS VARIAVEIS AO DICT
+    horario = input("Horário permitido (ex: 7h-18h): ").strip()
+    observacoes = input("Observações (opcional): ").strip()
+
+    dados[matricula] = {
         "nome": nome,
         "perfil": perfil,
-        "horario": input("Horário permitido (ex: 7h-18h): "),
-        "maquina": input("Qual máquina foi usada: "),
-        "observacoes": input("Observações (opcional): "),
-        "acesso": agora()
+        "horario": horario,
+        "observacoes": observacoes,
+        "acesso": "Nunca acessou"
     }
 
     salvar()
-    print("Usuário cadastrado com sucesso.")
+
+    print("\nUsuário cadastrado com sucesso.")
 
 
-# VISUALIZAR USUÁRIO (ADM: busca por nome)
+# VISUALIZAR USUÁRIO (ADMINISTRADOR)
 def visualizar():
     limpar()
     consultar()
@@ -167,72 +274,91 @@ def visualizar():
         print("Não há nada no registro.")
         return
 
-    pergunta = input("Qual o usuário que você deseja checar: ") #COMPARAR
+    pergunta = input(
+        "Qual o usuário que você deseja checar: "
+    ).strip()
+
+    encontrado = False
 
     for matricula, info in dados.items():
+
         if info["nome"].lower() == pergunta.lower():
             exibir(matricula, info)
-            return
+            encontrado = True
 
-    print("O usuário não foi cadastrado.")
+    if not encontrado:
+        print("O usuário não foi cadastrado.")
 
 
-# VISUALIZAR O PRÓPRIO USUÁRIO (estudante/professor)
-def visualizarProprio(matricula): #VISUALIZAÇÃO DO PROPRIO PERFIL
+# VISUALIZAR O PRÓPRIO USUÁRIO
+def visualizarProprio(matricula):
     limpar()
     consultar()
 
     if matricula in dados:
-        exibir(matricula, dados[matricula]) # MOSTRA COISAS ESPECIFICAS
+        exibir(matricula, dados[matricula])
+
     else:
         print("O usuário não foi cadastrado.")
 
 
-# ATUALIZAR USUÁRIO (ADM)
-def atualizarADM():
+# ATUALIZAR USUÁRIO (ADMINISTRADOR)
+def atualizarADM(matricula_logada):
     limpar()
     consultar()
 
-    matricula = input("Digite a matrícula do usuário que deseja atualizar: ")
+    matricula = input(
+        "Digite a matrícula do usuário que deseja atualizar: "
+    ).strip()
 
     if matricula not in dados:
         print("O usuário não foi cadastrado.")
         return
 
-    info = dados[matricula] # COMPARAÇÃO
+    info = dados[matricula]
 
-    print("Deixe vazio para manter o dado atual.")
+    print("\nDeixe vazio para manter o dado atual.")
 
-    nome = input(f"Nome ({info['nome']}): ") #PRINTS
-    perfil = input(f"Perfil ({info['perfil']}): ").lower()
+    nome = input(f"Nome ({info['nome']}): ")
+
+    # Impede que o administrador altere o próprio perfil
+    if matricula == matricula_logada:
+        print("Você não pode alterar o próprio perfil.")
+        perfil = ""
+
+    else:
+        perfil = input(
+            f"Perfil ({info['perfil']}): "
+        ).lower().strip()
+
     horario = input(f"Horário ({info['horario']}): ")
-    maquina = input(f"Máquina ({info['maquina']}): ")
-    observacoes = input(f"Observações ({info['observacoes']}): ")
+    observacoes = input(
+        f"Observações ({info['observacoes']}): "
+    )
 
-    if nome:
-        info["nome"] = nome
+    if nome.strip():
+        info["nome"] = nome.strip()
 
     if perfil:
         if perfil in PERFIS:
             info["perfil"] = perfil
+
         else:
-            print("Perfil inválido, mantido o atual.")
+            print("Perfil inválido. Mantido o atual.")
 
-    if horario:
-        info["horario"] = horario
+    if horario.strip():
+        info["horario"] = horario.strip()
 
-    if maquina:
-        info["maquina"] = maquina
-
-    if observacoes:
-        info["observacoes"] = observacoes
+    if observacoes.strip():
+        info["observacoes"] = observacoes.strip()
 
     salvar()
-    print("Usuário atualizado com sucesso.")
+
+    print("\nUsuário atualizado com sucesso.")
 
 
-# ATUALIZAR O PRÓPRIO USUÁRIO (estudante e professor)
-def atualizarProprio(matricula): 
+# ATUALIZAR O PRÓPRIO USUÁRIO
+def atualizarProprio(matricula):
     limpar()
     consultar()
 
@@ -242,115 +368,160 @@ def atualizarProprio(matricula):
 
     info = dados[matricula]
 
-    print("Deixe vazio para manter o dado atual.")
+    print("\nDeixe vazio para manter o dado atual.")
 
     nome = input(f"Nome ({info['nome']}): ")
-    observacoes = input(f"Observações ({info['observacoes']}): ")
+    observacoes = input(
+        f"Observações ({info['observacoes']}): "
+    )
 
-    if nome:
-        info["nome"] = nome
+    if nome.strip():
+        info["nome"] = nome.strip()
 
-    if observacoes:
-        info["observacoes"] = observacoes
+    if observacoes.strip():
+        info["observacoes"] = observacoes.strip()
 
     salvar()
-    print("Usuário atualizado com sucesso.")
+
+    print("\nUsuário atualizado com sucesso.")
 
 
-# DELETAR USUÁRIO (ADM)
+# DELETAR USUÁRIO (ADMINISTRADOR)
 def deletar(matricula_logada):
     limpar()
     consultar()
 
-    matricula = input("Digite a matrícula do usuário que deseja deletar: ")
+    matricula = input(
+        "Digite a matrícula do usuário que deseja deletar: "
+    ).strip()
 
-    if matricula == matricula_logada: #VERIFICAÇÃO CASO TENTE SE DELETAR
+    # Impede a exclusão do próprio administrador
+    if matricula == matricula_logada:
         print("Você não pode deletar o usuário com o qual está logado.")
         return
 
-    if matricula in dados:
-        confirmacao = input("Deseja realmente deletar? (s/n): ")
-
-        if confirmacao.lower() == "s":
-            del dados[matricula]
-            salvar()
-            print("Usuário deletado com sucesso.")
-        else:
-            print("Operação cancelada.")
-    else:
+    if matricula not in dados:
         print("O usuário não foi cadastrado.")
+        return
+
+    # Impede a exclusão do último administrador
+    if dados[matricula]["perfil"] == "administrador":
+
+        administradores = 0
+
+        for info in dados.values():
+            if info["perfil"] == "administrador":
+                administradores += 1
+
+        if administradores == 1:
+            print("Não é possível excluir o último administrador.")
+            return
+
+    confirmacao = input(
+        "Deseja realmente deletar? (s/n): "
+    ).lower().strip()
+
+    if confirmacao == "s":
+
+        # Exclui somente o cadastro.
+        # O histórico de acessos permanece preservado.
+        del dados[matricula]
+
+        salvar()
+
+        print("Usuário deletado com sucesso.")
+
+    else:
+        print("Operação cancelada.")
 
 
-# MATRÍCULA OCULTA (ADM)
+# REVELAR MATRÍCULA (ADMINISTRADOR)
 def matricula():
     limpar()
     consultar()
 
-    nome = input("Digite o nome do usuário: ")
+    nome = input("Digite o nome do usuário: ").strip()
+
+    encontrado = False
 
     for numero, info in dados.items():
+
         if info["nome"].lower() == nome.lower():
             print("Matrícula:", numero)
-            return
+            encontrado = True
 
-    print("O usuário não foi cadastrado.")
+    if not encontrado:
+        print("O usuário não foi cadastrado.")
 
 
-def criarRelatorio(): #AINDA VAMOS VER COMO FAZER ISSO DIREITINHO
+# CRIAR RELATÓRIO
+def criarRelatorio():
     consultar()
 
     relatorio = (
-        f"{'Matrícula':>10}{'Nome':>12}{'Perfil':>14}"
-        f"{'Acesso':>20}{'Maquina':>9}{'Observações':>15}\n"
+        f"{'Matrícula':>12}{'Nome':>20}{'Perfil':>16}"
+        f"{'Acesso':>22}{'Máquina':>18}{'Observações':>20}\n"
     )
 
     for chave, itens in dados.items():
+
         relatorio += (
-            f"{chave:>10}{itens['nome']:>12}{itens['perfil']:>14}"
-            f"{itens['acesso']:>20}{itens['maquina']:>9}{itens['observacoes']:>15}\n"
+            f"{chave:>12}{itens['nome']:>20}{itens['perfil']:>16}"
+            f"{itens['acesso']:>22}{ultimaMaquina(chave):>18}"
+            f"{itens['observacoes']:>20}\n"
         )
 
     salvarRelatorio(relatorio)
+
     print("Relatório salvo em relatorio.txt")
 
 
-# MENUS
+# MENU ADMINISTRADOR
 def menuADM(matricula_logada):
     while True:
-        print("\n=== Sentinelalog (Administrador) ===")
+
+        print("\n=== SentinelLog (Administrador) ===")
         print("1. Registrar usuário")
         print("2. Visualizar usuário")
         print("3. Atualizar usuário")
         print("4. Deletar usuário")
-        print("5. Matrícula oculta")
-        print("6. Listar")
+        print("5. Revelar matrícula")
+        print("6. Criar relatório")
         print("0. Sair")
 
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
             registrar()
+
         elif opcao == "2":
             visualizar()
+
         elif opcao == "3":
-            atualizarADM()
+            atualizarADM(matricula_logada)
+
         elif opcao == "4":
             deletar(matricula_logada)
+
         elif opcao == "5":
             matricula()
+
         elif opcao == "6":
             criarRelatorio()
+
         elif opcao == "0":
             print("Saindo da conta...")
             break
+
         else:
             print("Opção inválida. Tente novamente.")
 
 
-# Estudante e professor têm o mesmo menu
+# MENU ESTUDANTE E PROFESSOR
 def menuUsuario(matricula_logada, titulo):
     while True:
-        print(f"\n=== Sentinelalog ({titulo}) ===")
+
+        print(f"\n=== SentinelLog ({titulo}) ===")
         print("1. Visualizar seu usuário")
         print("2. Atualizar seu usuário")
         print("3. Sair")
@@ -359,53 +530,68 @@ def menuUsuario(matricula_logada, titulo):
 
         if opcao == "1":
             visualizarProprio(matricula_logada)
+
         elif opcao == "2":
             atualizarProprio(matricula_logada)
+
         elif opcao == "3":
             print("Saindo da conta...")
             break
+
         else:
             print("Opção inválida. Tente novamente.")
 
 
+# PERFIL ESTUDANTE
 def perfil_estudante(matricula_logada):
     menuUsuario(matricula_logada, "Estudante")
 
 
+# PERFIL PROFESSOR
 def perfil_professor(matricula_logada):
     menuUsuario(matricula_logada, "Professor")
 
 
+# PERFIL ADMINISTRADOR
 def perfil_administrador(matricula_logada):
     menuADM(matricula_logada)
 
 
 # PROGRAMA PRINCIPAL
 def main():
+
     primeiro_acesso()
 
+    # Carrega o histórico de acessos
+    consultarAcessos()
+
     while True:
-        print("\n=== Sentinelalog ===")
+
+        print("\n=== SentinelLog ===")
         print("1. Login")
         print("0. Sair")
 
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
+
             matricula_logada, perfil = login()
 
             if perfil == "estudante":
                 perfil_estudante(matricula_logada)
+
             elif perfil == "professor":
                 perfil_professor(matricula_logada)
+
             elif perfil == "administrador":
                 perfil_administrador(matricula_logada)
 
         elif opcao == "0":
-            print("Encerrando o Sentinelalog...")
+            print("Encerrando o SentinelLog...")
             break
+
         else:
-            print("Opção inválida")
+            print("Opção inválida.")
 
 
 if __name__ == "__main__":
