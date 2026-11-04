@@ -1,4 +1,4 @@
-import os
+import os #oi andré - PEDRO MIGUEL 
 from datetime import datetime
 
 dados = {}
