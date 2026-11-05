@@ -2,7 +2,7 @@
 
 
 dados = {}
-acessos = []
+acessos = [] #variável que guarda o histórico de tentativas de login 
 bloqueadas = []  #  lista de máquinas bloqueadas
 
 PERFIS = ("estudante", "professor", "administrador")
