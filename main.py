@@ -3,17 +3,18 @@ from datetime import datetime
 
 dados = {}
 acessos = []
+bloqueadas = []  #  lista de máquinas bloqueadas
 
 PERFIS = ("estudante", "professor", "administrador")
 
 
 # LIMPAR TERMINAL
 def limpar():
-    os.system("cls" if os.name == "nt" else "clear")
+    os.system("cls" if os.name == "nt" else "clear") 
 
 
 # CONSULTAR OS DADOS DO ARQUIVO
-def consultar():
+def consultar(): # consultar o arquivo e atribuir em variaveis
     dados.clear()
 
     try:
@@ -45,7 +46,7 @@ def consultar():
 
 
 # SALVAR ALTERAÇÕES NO ARQUIVO
-def salvar():
+def salvar(): # pega todos os dados e da um print no arquivo de texto
     with open("arquivos.txt", "w", encoding="utf8") as arquivo:
         for matricula, info in dados.items():
             arquivo.write(
@@ -56,7 +57,7 @@ def salvar():
 
 
 # CONSULTAR HISTÓRICO DE ACESSOS
-def consultarAcessos():
+def consultarAcessos(): # so vai pegar o acesso da pessoa, importante pra parte de sucesso e falha
     acessos.clear()
 
     try:
@@ -81,7 +82,7 @@ def consultarAcessos():
 
 
 # REGISTRAR CADA TENTATIVA DE ACESSO
-def registrarAcesso(matricula, maquina, resultado):
+def registrarAcesso(matricula, maquina, resultado): # parte de acesso (log)
     registro = {
         "matricula": matricula,
         "data_hora": agora(),
@@ -99,7 +100,7 @@ def registrarAcesso(matricula, maquina, resultado):
 
 
 # IDENTIFICAR A ÚLTIMA MÁQUINA UTILIZADA
-def ultimaMaquina(matricula):
+def ultimaMaquina(matricula): # maquina utilizada
     for acesso in reversed(acessos):
         if (
             acesso["matricula"] == matricula
@@ -110,31 +111,54 @@ def ultimaMaquina(matricula):
     return "-"
 
 
+# CONSULTAR MÁQUINAS BLOQUEADAS
+def consultarBloqueadas():  # vai so pegar a lista de maquinas bloqueadas e colocar na lista de bloqueados 
+    bloqueadas.clear()
+
+    try:
+        with open("maquinas_bloqueadas.txt", "r", encoding="utf8") as arquivo: #procedimento padrao ne
+            for linha in arquivo:
+                nome_maquina = linha.strip()
+
+                if nome_maquina:
+                    bloqueadas.append(nome_maquina)
+
+    except FileNotFoundError:
+        pass
+
+
+# VERIFICAR SE A MÁQUINA ESTÁ BLOQUEADA
+def maquinaBloqueada(maquina): #parte da verificação, padrão tbm so segue, genuinamente a mesma coisa que foi feita antes
+    consultarBloqueadas()
+
+    return maquina.lower() in [m.lower() for m in bloqueadas]
+
+
 # SALVAR RELATÓRIO
-def salvarRelatorio(relatorio):
+def salvarRelatorio(relatorio): # so salvar o relatorio no arquivo
     with open("relatorio.txt", "w", encoding="utf8") as arquivo:
         arquivo.write(relatorio)
 
 
 # DATA E HORÁRIO ATUAL
-def agora():
+def agora(): # parte do horario, vou mexer nisso dps pra verificar se o usuario esta no horario permitido ou nao
     return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 
 # VERIFICAR LOGIN
-def verificar_login(nome, matricula):
-    consultar()
+def verificar_login(nome, matricula): # parte de verificação do login 
+    consultar() # ele consulta os dados
 
-    info = dados.get(matricula)
+    info = dados.get(matricula) # vai atribuir info com a matricula 
 
-    if info and info["nome"].lower() == nome.lower():
-        return info["perfil"].lower()
+    if info and info["nome"].lower() == nome.lower(): #vai ver o perfil do usuario e retornar ele para o codigo, assimo usaurio entra no perfil certo
+        return info["perfil"].lower() 
 
     return None
 
 
 # CRIAR PRIMEIRO ADMINISTRADOR
-def primeiro_acesso():
+def primeiro_acesso(): # essa parte é so necessaria se nao tiver informação nenhuma e seja o primeiro cadastro
     consultar()
 
     if dados:
@@ -170,19 +194,28 @@ def primeiro_acesso():
 
 # LOGIN
 def login():
-    for tentativa in range(3):
+    for tentativa in range(3): # parte de tentativa, vou ver como eu mexo nisso pra parte de suspeito e critico
 
         nome = input("\nDigite seu nome: ").strip()
         matricula = input("Digite sua matrícula: ").strip()
 
         maquina = os.environ.get("COMPUTERNAME", "MAQUINA-DESCONHECIDA")
 
+        # bloqueia o acesso se a máquina estiver na lista de bloqueadas
+        if maquinaBloqueada(maquina):
+            registrarAcesso(matricula, maquina, "bloqueado")
+
+            print("\nAcesso negado: esta máquina está bloqueada.")
+
+            return None, None # ele so nao entra no perfil caso o pc esteja usando seja bloqueado, provavelmente vou mudar essa parte enfim 
+#nao sei exatamente irei ver amanha com o povo 
+
         perfil = verificar_login(nome, matricula)
 
         if perfil in PERFIS:
 
             # Atualiza a data do último acesso
-            dados[matricula]["acesso"] = agora()
+            dados[matricula]["acesso"] = agora() # so muda o horario de acesso
             salvar()
 
             # Registra o acesso bem-sucedido
@@ -193,7 +226,8 @@ def login():
             return matricula, perfil
 
         # Registra a tentativa que falhou
-        registrarAcesso(matricula, maquina, "falha")
+        registrarAcesso(matricula, maquina, "falha") # vou ver como eu vou usar isso pro suspeito e critico, mas provavekmente 
+        #botar condicionais e é isso, faço amanha
 
         print("\nNome ou matrícula incorretos!")
 
@@ -202,7 +236,7 @@ def login():
     return None, None
 
 # EXIBIR USUÁRIO
-def exibir(matricula, info):
+def exibir(matricula, info): # so mostrar nada mais nada menos que so print
     matricula_oculta = (
         matricula[:2] + "*" * max(0, len(matricula) - 2)
     )
@@ -223,19 +257,19 @@ def registrar():
     limpar()
     consultar()
 
-    matricula = input("Qual a matrícula do usuário: ").strip()
+    matricula = input("Qual a matrícula do usuário: ").strip() 
 
     while len(matricula) < 4:
-        print("A matrícula deve ter pelo menos 4 caracteres.")
+        print("A matrícula deve ter pelo menos 4 caracteres.")# caso tente registrar o usuario com uma matricula pequena
         matricula = input("Qual a matrícula do usuário: ").strip()
 
-    if matricula in dados:
+    if matricula in dados: # verificação se ja foi
         print("O usuário já foi cadastrado.")
         return
 
     nome = input("Nome: ").strip()
 
-    while not nome:
+    while not nome: # nem preciso comentar nessa parte super intuitivo tbm :p
         print("O nome não pode ficar vazio.")
         nome = input("Nome: ").strip()
 
@@ -249,7 +283,7 @@ def registrar():
             "Perfil (estudante, professor, administrador): "
         ).lower().strip()
 
-    horario = input("Horário permitido (ex: 7h-18h): ").strip()
+    horario = input("Horário permitido (ex: 7h-18h): ").strip() # vou mexer nessa bomba dps, nao deve ser dificil a verificação 
     observacoes = input("Observações (opcional): ").strip()
 
     dados[matricula] = {
@@ -266,7 +300,7 @@ def registrar():
 
 
 # VISUALIZAR USUÁRIO (ADMINISTRADOR)
-def visualizar():
+def visualizar(): # aqui é a vizualização especifica do adm, so tem mais informação mas é o mesmo processo
     limpar()
     consultar()
 
@@ -291,7 +325,7 @@ def visualizar():
 
 
 # VISUALIZAR O PRÓPRIO USUÁRIO
-def visualizarProprio(matricula):
+def visualizarProprio(matricula): # visualização so que aluno ou professor
     limpar()
     consultar()
 
@@ -303,7 +337,7 @@ def visualizarProprio(matricula):
 
 
 # ATUALIZAR USUÁRIO (ADMINISTRADOR)
-def atualizarADM(matricula_logada):
+def atualizarADM(matricula_logada): # adm atualizar blah blah blah
     limpar()
     consultar()
 
@@ -358,7 +392,7 @@ def atualizarADM(matricula_logada):
 
 
 # ATUALIZAR O PRÓPRIO USUÁRIO
-def atualizarProprio(matricula):
+def atualizarProprio(matricula):  # mesma coisa so que menos
     limpar()
     consultar()
 
@@ -386,8 +420,8 @@ def atualizarProprio(matricula):
     print("\nUsuário atualizado com sucesso.")
 
 
-# DELETAR USUÁRIO (ADMINISTRADOR)
-def deletar(matricula_logada):
+# DELETAR USUÁRIO 
+def deletar(matricula_logada): # deletar, so adm pode ne :p
     limpar()
     consultar()
 
@@ -436,7 +470,7 @@ def deletar(matricula_logada):
 
 
 # REVELAR MATRÍCULA (ADMINISTRADOR)
-def matricula():
+def matricula(): #mostrar a matricula do usuario sem os asteristicos
     limpar()
     consultar()
 
@@ -454,8 +488,29 @@ def matricula():
         print("O usuário não foi cadastrado.")
 
 
+# BLOQUEAR MÁQUINA (ADMINISTRADOR)
+def bloquearMaquina(): # opa coisa nova que eu preciso explicar, essa parte eu nao sabia 100% oque fazer mas é a mesma coisa que cadastrar
+    limpar()            # so que para as maquinas bloqueadas, tipo eu sei que o cadastro dessas maquinas vão ser necessarias, mas o dps eu nao
+    consultarBloqueadas() #sei, tipo ele pode acessar ? isso vai aparecer no log ? sla vou ver com victor dps
+
+    nome_maquina = input("Nome da máquina a bloquear: ").strip()
+
+    if not nome_maquina:
+        print("O nome não pode ficar vazio.")
+        return
+
+    if nome_maquina.lower() in [m.lower() for m in bloqueadas]:
+        print("Essa máquina já está bloqueada.")
+        return
+
+    with open("maquinas_bloqueadas.txt", "a", encoding="utf8") as arquivo:
+        arquivo.write(f"{nome_maquina}\n")
+
+    print("Máquina bloqueada com sucesso.")
+
+
 # CRIAR RELATÓRIO
-def criarRelatorio():
+def criarRelatorio(): # esse relatorio so mostra os usuario e algumas informações deles, enfim tenho ctz que vamos ter que mexer nisso alguma hr
     consultar()
 
     relatorio = (
@@ -477,7 +532,7 @@ def criarRelatorio():
 
 
 # MENU ADMINISTRADOR
-def menuADM(matricula_logada):
+def menuADM(matricula_logada): 
     while True:
 
         print("\n=== SentinelLog (Administrador) ===")
@@ -487,6 +542,7 @@ def menuADM(matricula_logada):
         print("4. Deletar usuário")
         print("5. Revelar matrícula")
         print("6. Criar relatório")
+        print("7. Bloquear máquina")  # NOVO
         print("0. Sair")
 
         opcao = input("Escolha uma opção: ")
@@ -508,6 +564,9 @@ def menuADM(matricula_logada):
 
         elif opcao == "6":
             criarRelatorio()
+
+        elif opcao == "7":  # NOVO
+            bloquearMaquina()
 
         elif opcao == "0":
             print("Saindo da conta...")
