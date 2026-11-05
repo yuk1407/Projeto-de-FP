@@ -7,6 +7,7 @@ from horario import *
 
 # CONSULTAR HISTÓRICO DE ACESSOS
 def consultarAcessos(): # so vai pegar o acesso da pessoa, importante pra parte de sucesso e falha
+    #carrega o histórico do arquivo
     acessos.clear()
 
     try:
@@ -33,6 +34,7 @@ def consultarAcessos(): # so vai pegar o acesso da pessoa, importante pra parte 
 
 # REGISTRAR CADA TENTATIVA DE ACESSO
 def registrarAcesso(matricula, maquina, resultado): # parte de acesso (log)
+    #registra cada tentativa de login
     registro = {
         "matricula": matricula,
         "data_hora": agora(),
@@ -51,6 +53,7 @@ def registrarAcesso(matricula, maquina, resultado): # parte de acesso (log)
 
 # IDENTIFICAR A ÚLTIMA MÁQUINA UTILIZADA
 def ultimaMaquina(matricula): # maquina utilizada
+    #identifica a última máquina usada
     for acesso in reversed(acessos):
         if (
             acesso["matricula"] == matricula
