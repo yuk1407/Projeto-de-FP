@@ -11,8 +11,10 @@ from permissaoADM import *
 
 
 
+
 # PROGRAMA PRINCIPAL
 def main():
+    limpar()
 
     primeiro_acesso()
 

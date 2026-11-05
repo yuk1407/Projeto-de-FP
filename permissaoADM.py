@@ -14,18 +14,36 @@ def primeiro_acesso(): # essa parte é so necessaria se nao tiver informação n
 
     print("\nNenhum usuário cadastrado.")
     print("Vamos criar o primeiro administrador.")
+    while True:
+        try:
 
-    matricula = input("Matrícula: ").strip()
+            matricula = int(input("Matrícula: "))
+        except:
+            print('matrícula inválida,tente novamente!')
+            continue
+        else:
+            break
 
-    while len(matricula) < 4:
-        print("A matrícula deve ter pelo menos 4 caracteres.")
-        matricula = input("Matrícula: ").strip()
+
+
+    while len(str(matricula)) < 4:
+        try:
+            print("A matrícula deve ter pelo menos 4 caracteres.")
+            matricula = int(input("Matrícula: "))
+        except:
+            print('matrícula inválida,tente novamente!')
+            continue
+        
+
+
 
     nome = input("Nome do administrador: ").strip()
 
     while not nome:
         print("O nome não pode ficar vazio.")
         nome = input("Nome do administrador: ").strip()
+
+    matricula = str(matricula)
 
     dados[matricula] = {
         "nome": nome,
@@ -45,12 +63,25 @@ def registrar():
     limpar()
     consultar()
 
-    matricula = input("Qual a matrícula do usuário: ").strip() 
+    while True:
+        try:
+            matricula = int(input("Qual a matrícula do usuário: "))
+        except: 
+            print('matrícula inválida,tente novamente!')
+            continue
+        else:
+            break
 
-    while len(matricula) < 4:
-        print("A matrícula deve ter pelo menos 4 caracteres.")# caso tente registrar o usuario com uma matricula pequena
-        matricula = input("Qual a matrícula do usuário: ").strip()
 
+    while len(str(matricula)) < 4:
+        try:
+            print("A matrícula deve ter pelo menos 4 caracteres.")# caso tente registrar o usuario com uma matricula pequena
+            matricula = int(input("Qual a matrícula do usuário: "))
+        except:
+            print('matrícula inválida,tente novamente!')
+            continue
+
+    matricula = str(matricula)
     if matricula in dados: # verificação se ja foi
         print("O usuário já foi cadastrado.")
         return
