@@ -12,6 +12,13 @@ from horario import *
 def limpar():
     os.system("cls" if os.name == "nt" else "clear")
 
+def pedirTexto(mensagem):
+    texto = input(mensagem).strip()
+    while "," in texto:
+        print("O texto não pode conter vírgulas.")
+        texto = input(mensagem).strip()
+    return texto
+    
 # CONSULTAR OS DADOS DO ARQUIVO
 def consultar(): # consultar o arquivo e atribuir em variaveis
     dados.clear()

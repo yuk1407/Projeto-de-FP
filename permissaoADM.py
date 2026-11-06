@@ -86,11 +86,11 @@ def registrar():
         print("O usuário já foi cadastrado.")
         return
 
-    nome = input("Nome: ").strip()
+    nome = pedirTexto("Nome: ") # aqui eu chamei a função que eu criei no crud.py para impedir que o usuario coloque virgula no nome, pois isso atrapalha na hora de salvar no arquivo
 
     while not nome: # nem preciso comentar nessa parte super intuitivo tbm :p
         print("O nome não pode ficar vazio.")
-        nome = input("Nome: ").strip()
+        nome = pedirTexto("Nome: ")
 
     perfil = input(
         "Perfil (estudante, professor, administrador): "
@@ -102,8 +102,8 @@ def registrar():
             "Perfil (estudante, professor, administrador): "
         ).lower().strip()
 
-    horario = input("Horário permitido (ex: 7h-18h): ").strip() # vou mexer nessa bomba dps, nao deve ser dificil a verificação 
-    observacoes = input("Observações (opcional): ").strip()
+    horario = pedirTexto("Horário permitido (ex: 7h-18h): ") # vou mexer nessa bomba dps, nao deve ser dificil a verificação 
+    observacoes = pedirTexto("Observações (opcional): ")
 
     dados[matricula] = {
         "nome": nome,
