@@ -1,3 +1,6 @@
+import socket
+import uuid
+
 from dadosGlobais import *
 
 
@@ -23,3 +26,23 @@ def maquinaBloqueada(maquina): #parte da verificação, padrão tbm so segue, ge
     consultarBloqueadas()
 
     return maquina.lower() in [m.lower() for m in bloqueadas]
+
+
+# LER O IDENTIFICADOR FIXO DO LINUX
+def lerMachineId():
+    try:
+        with open("/etc/machine-id", "r", encoding="utf8") as arquivo:
+            return arquivo.read().strip()[:6]
+    except (FileNotFoundError, PermissionError):
+        return None
+
+# IDENTIFICAR ESTA MÁQUINA
+def identificarMaquina():
+    nome = socket.gethostname()
+    if nome.replace(".", "").isdigit():
+        nome = "MAQ"
+    
+    sufixo = lerMachineId()
+    if sufixo is None:
+        sufixo = f"{uuid.getnode():012x}"[-6:]
+    return f"{nome}-{sufixo}"
