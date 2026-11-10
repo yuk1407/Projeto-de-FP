@@ -1,6 +1,7 @@
 from dadosGlobais import *
 from crud import *
 from relatorio import *
+from maquinasBloqueadas import *
 
 #AQUI TEM TODAS AS FUNÇÕES COM PERMISSÃO DE ADM
 #TODA FUNÇÃO QUE ESTIVER RELACIONADO A UMA CONTA ADM PRECISA ESTAR AQUI
@@ -18,7 +19,7 @@ def primeiro_acesso(): # essa parte é so necessaria se nao tiver informação n
         try:
 
             matricula = int(input("Matrícula: "))
-        except:
+        except ValueError:
             print('matrícula inválida,tente novamente!')
             continue
         else:
@@ -273,14 +274,14 @@ def bloquearMaquina(): # opa coisa nova que eu preciso explicar, essa parte eu n
     if not nome_maquina:
         print("O nome não pode ficar vazio.")
         return
-
+        
     if nome_maquina.lower() in [m.lower() for m in bloqueadas]:
         print("Essa máquina já está bloqueada.")
         return
-
+        
     with open("maquinas_bloqueadas.txt", "a", encoding="utf8") as arquivo:
         arquivo.write(f"{nome_maquina}\n")
-
+        
     print("Máquina bloqueada com sucesso.")
 
 

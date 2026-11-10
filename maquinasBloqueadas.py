@@ -23,3 +23,17 @@ def maquinaBloqueada(maquina): #parte da verificação, padrão tbm so segue, ge
     consultarBloqueadas()
 
     return maquina.lower() in [m.lower() for m in bloqueadas]
+
+
+def bloquearMaquinaAutomatico(nome_maquina):
+    if not nome_maquina:
+        return
+    
+    if nome_maquina.lower() in [m.lower() for m in bloqueadas]:
+        return
+    
+    with open("maquinas_bloqueadas.txt", "a", encoding="utf8") as arquivo:
+        arquivo.write(f"{nome_maquina}\n")
+        print("maquina atual bloqueada!")
+    
+
