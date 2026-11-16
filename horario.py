@@ -7,3 +7,16 @@ from datetime import datetime
 def agora(): # parte do horario, vou mexer nisso dps pra verificar se o usuario esta no horario permitido ou nao
     return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
+def verificarHorario(horario): 
+
+    horario_atual = datetime.now().hour # so vai pegar a hora a atual
+
+    inicio, fim = horario.split("-") # vai pegar o horario permitido que esta no formato (7h-14h por exemplo)
+
+    inicio = int(inicio.replace("h", "").strip()) # vai so tirar o h 
+    fim = int(fim.replace("h", "").strip())
+
+    if inicio <= horario_atual < fim: # caso esteja dentro vai retoranar True
+        return True
+
+    return False
