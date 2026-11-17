@@ -298,14 +298,7 @@ if __name__ == "__main__":
         print("\nA chave da API não está configurada.")
         print("Veja as instruções no início do arquivo agente.py.")
     else:
-        arquivo_teste = "teste_agente.csv"
-        with open(arquivo_teste, "w", encoding="utf-8") as f:
-            f.write("id,nome,categoria,valor,data_criacao\n")
-            f.write("1,Notebook,Eletrônicos,3500.00,2026-05-20 10:30:00\n")
-            f.write("2,Mouse,Eletrônicos,50.00,2026-05-21 14:15:00\n")
-            f.write("3,Cadeira,Móveis,800.00,2026-05-22 09:00:00\n")
-        print(f"\nArquivo de teste criado: {arquivo_teste}")
-
+        
         pergunta_teste = input("\nFaça uma pergunta sobre os dados de teste > ")
         resposta = falar_com_agente("relatorio.txt", pergunta_teste, "Sistema de Teste")
 
