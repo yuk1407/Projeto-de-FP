@@ -12,6 +12,13 @@ from horario import *
 def limpar():
     os.system("cls" if os.name == "nt" else "clear")
 
+def pedirTexto(mensagem): #ele impede que seja colocado virgula no texto, e quebre a parte que mostra os dados do usuario.
+    texto = input(mensagem).strip()
+    while "," in texto:
+        print("O texto não pode conter vírgulas.")
+        texto = input(mensagem).strip()
+    return texto
+    
 # CONSULTAR OS DADOS DO ARQUIVO
 def consultar(): # consultar o arquivo e atribuir em variaveis
     dados.clear()
@@ -76,7 +83,7 @@ def login():
         nome = input("\nDigite seu nome: ").strip()
         matricula = input("Digite sua matrícula: ").strip()
 
-        maquina = os.environ.get("COMPUTERNAME", "MAQUINA-DESCONHECIDA")
+        maquina = identificarMaquina()
 
         # bloqueia o acesso se a máquina estiver na lista de bloqueadas
         if maquinaBloqueada(maquina):
