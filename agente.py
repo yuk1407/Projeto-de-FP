@@ -307,7 +307,7 @@ if __name__ == "__main__":
         print(f"\nArquivo de teste criado: {arquivo_teste}")
 
         pergunta_teste = input("\nFaça uma pergunta sobre os dados de teste > ")
-        resposta = falar_com_agente(arquivo_teste, pergunta_teste, "Sistema de Teste")
+        resposta = falar_com_agente("relatorio.txt", pergunta_teste, "Sistema de Teste")
 
         if resposta is None:
             print("\nO teste não foi concluído.")
