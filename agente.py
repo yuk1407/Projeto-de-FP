@@ -48,6 +48,7 @@ Instalação: pip install groq
 """
 
 import os
+from relatorio import *
 
 try:
     from groq import Groq
@@ -298,7 +299,7 @@ if __name__ == "__main__":
         print("\nA chave da API não está configurada.")
         print("Veja as instruções no início do arquivo agente.py.")
     else:
-        
+        criarRelatorio()
         pergunta_teste = input("\nFaça uma pergunta sobre os dados de teste > ")
         resposta = falar_com_agente("relatorio.txt", pergunta_teste, "Sistema de Teste")
 

@@ -1,5 +1,0 @@
-   Matrícula                Nome          Perfil                Acesso           Máquina    Status         Observações  Motivo
-      102030                 Ash   administrador   17/11/2026 14:11:20               PC1    Normal                      -
-      405060          Link Zelda       professor         Nunca acessou                 -    Normal Um ótimo explorador  sem acessos
-      509070        Rei do Clash       estudante         Nunca acessou                 -    Normal    Muito experiente  sem acessos
-      206040        Light Yagami       estudante         Nunca acessou                 -    NormalGosta muito de escrever  sem acessos

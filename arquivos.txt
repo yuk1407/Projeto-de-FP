@@ -1,5 +1,0 @@
-102030,Ash,administrador,24h,17/11/2026 15:35:32,
-405060,Link Zelda,professor,9-15,Nunca acessou,Um ótimo explorador
-509070,Rei do Clash,estudante,9-15,Nunca acessou,Muito experiente
-206040,Light Yagami,estudante,8-17,17/11/2026 14:18:13,Gosta muito de escrever
-0007,bart,estudante,7-20,Nunca acessou,nova
