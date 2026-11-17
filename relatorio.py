@@ -1,6 +1,7 @@
 from dadosGlobais import *
 from crud import *
 from manipularAcessos import *
+from status import *
 
 #ESSE ARQUIVO É REPONSAVEL PELO RELATORIO, TANTO PRA CRIAR, SALVAR E OUTRAR FUNCIONALIDADES FUTURAS 
 
@@ -17,20 +18,22 @@ def salvarRelatorio(relatorio): # so salvar o relatorio no arquivo
 
 
 # CRIAR RELATÓRIO
-def criarRelatorio(): # esse relatorio so mostra os usuario e algumas informações deles, enfim tenho ctz que vamos ter que mexer nisso alguma hr
+def criarRelatorio():
     consultar()
 
     relatorio = (
         f"{'Matrícula':>12}{'Nome':>20}{'Perfil':>16}"
-        f"{'Acesso':>22}{'Máquina':>18}{'Observações':>20}\n"
+        f"{'Acesso':>22}{'Máquina':>18}{'Status':>10}"
+        f"{'Observações':>20}  Motivo\n"
     )
 
     for chave, itens in dados.items():
+        status, motivo = classificarUsuario(chave, itens)
 
         relatorio += (
             f"{chave:>12}{itens['nome']:>20}{itens['perfil']:>16}"
-            f"{itens['acesso']:>22}{ultimaMaquina(chave):>18}"
-            f"{itens['observacoes']:>20}\n"
+            f"{itens['acesso']:>22}{ultimaMaquina(chave):>18}{status:>10}"
+            f"{itens['observacoes']:>20}  {motivo}\n"
         )
 
     salvarRelatorio(relatorio)

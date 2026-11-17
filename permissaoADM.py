@@ -1,6 +1,7 @@
 from dadosGlobais import *
 from crud import *
 from relatorio import *
+from maquinasBloqueadas import *
 
 #AQUI TEM TODAS AS FUNÇÕES COM PERMISSÃO DE ADM
 #TODA FUNÇÃO QUE ESTIVER RELACIONADO A UMA CONTA ADM PRECISA ESTAR AQUI
@@ -18,7 +19,7 @@ def primeiro_acesso(): # essa parte é so necessaria se nao tiver informação n
         try:
 
             matricula = int(input("Matrícula: "))
-        except:
+        except ValueError:
             print('matrícula inválida,tente novamente!')
             continue
         else:
@@ -64,22 +65,17 @@ def registrar():
     consultar()
 
     while True:
-        try:
-            matricula = int(input("Qual a matrícula do usuário: "))
-        except: 
-            print('matrícula inválida,tente novamente!')
-            continue
-        else:
-            break
+        matricula = input("Qual a matrícula do usuário: ").strip()
 
-
-    while len(str(matricula)) < 4:
-        try:
-            print("A matrícula deve ter pelo menos 4 caracteres.")# caso tente registrar o usuario com uma matricula pequena
-            matricula = int(input("Qual a matrícula do usuário: "))
-        except:
-            print('matrícula inválida,tente novamente!')
+        if not matricula.isdigit():
+            print("Matrícula inválida, tente novamente!")
             continue
+
+        if len(matricula) < 4:
+            print("A matrícula deve ter pelo menos 4 caracteres.")
+            continue
+
+        break
 
     matricula = str(matricula)
     if matricula in dados: # verificação se ja foi
@@ -264,26 +260,62 @@ def matricula(): #mostrar a matricula do usuario sem os asteristicos
 
 
 # BLOQUEAR MÁQUINA (ADMINISTRADOR)
-def bloquearMaquina(): # opa coisa nova que eu preciso explicar, essa parte eu nao sabia 100% oque fazer mas é a mesma coisa que cadastrar
-    limpar()            # so que para as maquinas bloqueadas, tipo eu sei que o cadastro dessas maquinas vão ser necessarias, mas o dps eu nao
-    consultarBloqueadas() #sei, tipo ele pode acessar ? isso vai aparecer no log ? sla vou ver com victor dps
+def bloquearMaquina(): 
+    limpar()           
+    consultarBloqueadas() 
 
     nome_maquina = input("Nome da máquina a bloquear: ").strip()
 
     if not nome_maquina:
         print("O nome não pode ficar vazio.")
         return
-
+        
     if nome_maquina.lower() in [m.lower() for m in bloqueadas]:
         print("Essa máquina já está bloqueada.")
         return
-
+        
     with open("maquinas_bloqueadas.txt", "a", encoding="utf8") as arquivo:
         arquivo.write(f"{nome_maquina}\n")
-
+        
     print("Máquina bloqueada com sucesso.")
 
+# DESBLOQUEAR MÁQUINA (ADMINISTRADOR)
+def desbloquearMaquina():
+    limpar()
+    consultarBloqueadas()
 
+    if not bloqueadas:
+        print("Não há máquinas bloqueadas.")
+        return
+
+    print("\n=== Máquinas bloqueadas ===")
+
+    for maquina in bloqueadas:
+        print("-", maquina)
+
+    nome_maquina = input("\nNome da máquina que deseja desbloquear: ").strip()
+
+    if not nome_maquina:
+        print("O nome não pode ficar vazio.")
+        return
+
+    encontrado = False
+
+    for maquina in bloqueadas:
+        if maquina.lower() == nome_maquina.lower():
+            bloqueadas.remove(maquina)
+            encontrado = True
+            break
+
+    if encontrado:
+        with open("maquinas_bloqueadas.txt", "w", encoding="utf8") as arquivo:
+            for maquina in bloqueadas:
+                arquivo.write(maquina + "\n")
+
+        print("Máquina desbloqueada com sucesso!")
+
+    else:
+        print("Essa máquina não está bloqueada.")
 
 # MENU ADMINISTRADOR
 def menuADM(matricula_logada): 
@@ -296,7 +328,8 @@ def menuADM(matricula_logada):
         print("4. Deletar usuário")
         print("5. Revelar matrícula")
         print("6. Criar relatório")
-        print("7. Bloquear máquina")  # NOVO
+        print("7. Bloquear máquina") 
+        print("8. Desbloquear máquina") 
         print("0. Sair")
 
         opcao = input("Escolha uma opção: ")
@@ -319,8 +352,11 @@ def menuADM(matricula_logada):
         elif opcao == "6":
             criarRelatorio()
 
-        elif opcao == "7":  # NOVO
+        elif opcao == "7": 
             bloquearMaquina()
+
+        elif opcao == "8":
+            desbloquearMaquina()
 
         elif opcao == "0":
             print("Saindo da conta...")

@@ -92,7 +92,7 @@ def login():
             print("\nAcesso negado: esta máquina está bloqueada.")
 
             return None, None # ele so nao entra no perfil caso o pc esteja usando seja bloqueado, provavelmente vou mudar essa parte enfim 
-#nao sei exatamente irei ver amanha com o povo 
+                                #nao sei exatamente irei ver amanha com o povo 
 
         perfil = verificar_login(nome, matricula)
 
@@ -116,6 +116,8 @@ def login():
         print("\nNome ou matrícula incorretos!")
 
     print("\nNúmero máximo de tentativas atingido.")
+    if tentativa >= 2:
+        bloquearMaquinaAutomatico(maquina) #bloqueia a maquina depois de 3 tentativas :)
 
     return None, None
 
