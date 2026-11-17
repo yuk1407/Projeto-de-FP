@@ -65,22 +65,17 @@ def registrar():
     consultar()
 
     while True:
-        try:
-            matricula = int(input("Qual a matrícula do usuário: "))
-        except: 
-            print('matrícula inválida,tente novamente!')
-            continue
-        else:
-            break
+        matricula = input("Qual a matrícula do usuário: ").strip()
 
-
-    while len(str(matricula)) < 4:
-        try:
-            print("A matrícula deve ter pelo menos 4 caracteres.")# caso tente registrar o usuario com uma matricula pequena
-            matricula = int(input("Qual a matrícula do usuário: "))
-        except:
-            print('matrícula inválida,tente novamente!')
+        if not matricula.isdigit():
+            print("Matrícula inválida, tente novamente!")
             continue
+
+        if len(matricula) < 4:
+            print("A matrícula deve ter pelo menos 4 caracteres.")
+            continue
+
+        break
 
     matricula = str(matricula)
     if matricula in dados: # verificação se ja foi
