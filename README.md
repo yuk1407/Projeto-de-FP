@@ -77,5 +77,10 @@
 - O ADM consegue alterar os dados apenas sabendo da matrícula.
 - Utilizamos dicionário para que todos os dados de um usuário estejam linkados com a sua matrícula
 
- 
+ ### 3. Consulta da IA
+- A presença da IA está para conseguir pegar informações necessária às ações do ADM
+- Pegar a quantidade de matrículas, nome atrelado a essa matrícula, informar máquinas bloqueadas, máquinas suspeitas etc...
+- A hierarquia também está presenta no uso da IA
+
+
 
