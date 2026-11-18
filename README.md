@@ -81,6 +81,7 @@
 - A presença da IA está para conseguir pegar informações necessária às ações do ADM
 - Pegar a quantidade de matrículas, nome atrelado a essa matrícula, informar máquinas bloqueadas, máquinas suspeitas etc...
 - A hierarquia também está presenta no uso da IA
+- A IA ja possui algumas perguntas ja feitas, como "Qual usuários tem mais falhas de login?".
 
 # Grupo:
 
