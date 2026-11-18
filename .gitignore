@@ -225,3 +225,15 @@ maquina_bloqueadas.txt
 
 # Chave privada da API Groq
 .env
+
+# Dados locais do SentinelaLog
+/arquivos.txt
+/acessos.txt
+/relatorio.txt
+
+# Arquivos locais de configuração
+.env.*
+!.env.example
+
+# Arquivos do macOS
+.DS_Store
