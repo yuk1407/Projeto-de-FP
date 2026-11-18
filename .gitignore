@@ -227,13 +227,17 @@ maquinas_bloqueadas.txt
 .env
 
 # Dados locais do SentinelaLog
-/arquivos.txt
-/acessos.txt
-/relatorio.txt
+# Evita que o arquivo de dados locais dos usuários seja incluído em novos commits por engano
+# Evita versionamento acidental do histórico de acessos
+/arquivos.txt 
+/acessos.txt 
+/relatorio.txt 
 
 # Arquivos locais de configuração
+# Ignora arquivos com nomes como .env.local e .env.production, que podem conter informações sensíveis.
 .env.*
 !.env.example
 
 # Arquivos do macOS
+# Ignora arquivos de metadados criados automaticamente pelo macOS.
 .DS_Store
