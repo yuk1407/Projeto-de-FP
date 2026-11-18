@@ -234,8 +234,10 @@ maquinas_bloqueadas.txt
 /relatorio.txt 
 
 # Arquivos locais de configuração
+# Ignora arquivos com nomes como .env.local e .env.production, que podem conter informações sensíveis.
 .env.*
 !.env.example
 
 # Arquivos do macOS
+# Ignora arquivos de metadados criados automaticamente pelo macOS.
 .DS_Store
