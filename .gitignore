@@ -228,8 +228,8 @@ maquinas_bloqueadas.txt
 
 # Dados locais do SentinelaLog
 /arquivos.txt #Evita que o arquivo de dados locais dos usuários seja incluído em novos commits por engano.
-/acessos.txt
-/relatorio.txt
+/acessos.txt #Evita versionamento acidental do histórico de acessos.
+/relatorio.txt 
 
 # Arquivos locais de configuração
 .env.*
