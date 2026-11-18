@@ -40,18 +40,18 @@
 ## Acessos.txt 
 ### Nessa área colocamos informações como a matrícula, horário de acesso, computador em que a tentativa de login foi feita e o sucesso/falha dessa tentativa
 
-![alt text](image-3.png)
+![Acessos](Imagens/Acessos.png)
 ## Arquivos.txt 
 ### Nessa área colocamos os seguintes dados :
 ### Matrícula, Nome, Perfil, Horário de acesso permitido, ultimo acesso do usuário e alguma observação(opicional).
 
-![alt text](image-2.png)
+![Arquivos](Imagens/Arquivos.png)
 
 ## Relatório
 ### Nessa área colocamos os seguintes dados :
 ### Matrícula, Nome, Perfil, Acesso, Máquinas, Status, Observações e Motivo(Status)
 
-![alt text](image-1.png)
+![Relatório](Imagens/Relatorio.png)
 
 ## IA - Groq
 
@@ -59,5 +59,6 @@
 
 ### A depender da sua posição no sistema, se você for estudante ou professor, terá acesso restrito aos dados que a IA poderá lhe passar.
 
-![alt text](image.png)
+![Plataforma da IA](Imagens/Plataforma%20da%20IA.png)
 
+##
