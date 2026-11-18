@@ -62,3 +62,4 @@ def ultimaMaquina(matricula): # maquina utilizada
             return acesso["maquina"]
 
     return "-"
+
