@@ -82,5 +82,11 @@
 - Pegar a quantidade de matrículas, nome atrelado a essa matrícula, informar máquinas bloqueadas, máquinas suspeitas etc...
 - A hierarquia também está presenta no uso da IA
 
+# Grupo:
 
+### André Allysson
+### Bernado Goudel
+### Matheus Luiz
+### Pedro Miguel
+### Steven Kang Lin
 
