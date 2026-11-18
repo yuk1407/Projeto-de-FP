@@ -22,6 +22,7 @@
 - Criar relatório
 - Bloquear máquina
 - Desbloquear máquina
+- Agente IA
 - Sair
 
 ### Entendemos que o ADM está em uma posição de controle e manipulação de arquivos e dados, mas, o unico dado que não será possível alterar é a matrícula do usuário.
@@ -61,4 +62,17 @@
 
 ![Plataforma da IA](Imagens/Plataforma%20da%20IA.png)
 
-##
+## Como utilizar o código?
+
+
+### O código foi pensado para ser uma plataforma bem intuitiva, possível de ser utilizada por pessoas com níveis de domínio diversos na área de TI.
+
+### 1. Opções de Ações:
+- As ações foram pensadas para serem precisas.
+- Ao clicar em uma das ações, como "Atualizar usuário" a pessoa conseguirá alterar dados de acordo com seu perfil.
+- O usuário do código não precisará escrever, apenas precisa clicar na opção e ela vai acontecer.
+- Cada ação é delimitada pelo perfil do usuário, sendo o ADM aquele com mais opções a serem realizadas, já o professor e o estudante tendo opções mais limitadas.
+
+### 2. Facilidade em analisar os dados:
+- 
+
