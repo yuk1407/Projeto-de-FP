@@ -120,7 +120,19 @@ def conversaFechada(texto, perfil):
 
 
 # CONVERSAR COM O AGENTE
-def conversarComAgente(matricula_logada, perfil):
+# CONVERSAR COM O AGENTE
+def conversarComAgente(matricula_logada):
+    consultar()
+
+    info = dados.get(matricula_logada)
+
+    if info is None:
+        print("Usuário não encontrado.")
+        return
+
+    # o perfil vem do cadastro, nunca do que o usuário digita
+    perfil = info["perfil"].lower()
+
     texto = montarTexto(matricula_logada, perfil)
 
     if texto.count("\n") <= 1:
@@ -136,9 +148,6 @@ def conversarComAgente(matricula_logada, perfil):
 
     conversaFechada(texto, perfil)
 
-
-
-if __name__== "__main__":
+if __name__ == "__main__":
     matricula = input("Matrícula: ").strip()
-    perfil = input("Perfil: ").strip().lower()
-    conversarComAgente(matricula, perfil)
+    conversarComAgente(matricula)

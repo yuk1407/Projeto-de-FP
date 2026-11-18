@@ -2,6 +2,7 @@ from dadosGlobais import *
 from crud import *
 from relatorio import *
 from maquinasBloqueadas import *
+from agenteIA import *
 
 #AQUI TEM TODAS AS FUNÇÕES COM PERMISSÃO DE ADM
 #TODA FUNÇÃO QUE ESTIVER RELACIONADO A UMA CONTA ADM PRECISA ESTAR AQUI
@@ -330,6 +331,7 @@ def menuADM(matricula_logada):
         print("6. Criar relatório")
         print("7. Bloquear máquina") 
         print("8. Desbloquear máquina") 
+        print("9. Agente de IA") 
         print("0. Sair")
 
         opcao = input("Escolha uma opção: ")
@@ -357,6 +359,9 @@ def menuADM(matricula_logada):
 
         elif opcao == "8":
             desbloquearMaquina()
+
+        elif opcao == "9":
+            conversarComAgente(matricula_logada)
 
         elif opcao == "0":
             print("Saindo da conta...")

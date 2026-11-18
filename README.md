@@ -40,17 +40,17 @@
 ## Acessos.txt 
 ### Nessa área colocamos informações como a matrícula, horário de acesso, computador em que a tentativa de login foi feita e o sucesso/falha dessa tentativa
 
-![alt text](image-1.png)
+![Acesso](image-1.png)
 
 ## Arquivos.txt 
 ### Nessa área colocamos os seguintes dados :
 ### Matrícula, Nome, Perfil, Horário de acesso permitido, ultimo acesso do usuário e alguma observação(opicional).
 
-![alt text](image.png)
+![arquivos](image.png)
 
 ## Relatório
 ### Nessa área colocamos os seguintes dados :
 ### Matrícula, Nome, Perfil, Acesso, Máquinas, Status, Observações e Motivo(Status)
 
-![alt text](image-2.png)
+![Relatorio](image-2.png)
 

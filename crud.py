@@ -187,7 +187,8 @@ def menuUsuario(matricula_logada, titulo):
         print(f"\n=== SentinelLog ({titulo}) ===")
         print("1. Visualizar seu usuário")
         print("2. Atualizar seu usuário")
-        print("3. Sair")
+        print("3. Agente de IA")
+        print("4. Sair")
 
         opcao = input("Escolha uma opção: ")
 
@@ -198,6 +199,10 @@ def menuUsuario(matricula_logada, titulo):
             atualizarProprio(matricula_logada)
 
         elif opcao == "3":
+            conversarComAgente(matricula_logada)
+
+
+        elif opcao == "4":
             print("Saindo da conta...")
             break
 
@@ -212,3 +217,6 @@ def perfil_estudante(matricula_logada):
 # PERFIL PROFESSOR
 def perfil_professor(matricula_logada):
     menuUsuario(matricula_logada, "Professor")
+
+from agenteIA import *
+from relatorio import *
