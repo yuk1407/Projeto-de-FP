@@ -74,5 +74,8 @@
 - Cada ação é delimitada pelo perfil do usuário, sendo o ADM aquele com mais opções a serem realizadas, já o professor e o estudante tendo opções mais limitadas.
 
 ### 2. Facilidade em analisar os dados:
-- 
+- O ADM consegue alterar os dados apenas sabendo da matrícula.
+- Utilizamos dicionário para que todos os dados de um usuário estejam linkados com a sua matrícula
+
+ 
 
