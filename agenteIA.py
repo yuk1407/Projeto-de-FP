@@ -2,6 +2,8 @@ from dadosGlobais import *
 from crud import consultar
 from manipularAcessos import consultarAcessos
 from agente import falar_com_agente_texto
+from datetime import datetime
+from horario import verificarHorario
 
 
 # REGRA DE PERMISSÃO: QUEM PODE VER OS ACESSOS DE QUEM
@@ -25,12 +27,43 @@ def podeVer(perfil, matricula_logada, matricula_alvo):
     return False
 
 
+
+# CONFERIR SE O ACESSO FOI DENTRO DO HORÁRIO PERMITIDO
+def dentroDoHorario(horario, data_hora):
+    try:
+        hora = datetime.strptime(data_hora, "%d/%m/%Y %H:%M:%S").hour
+    except ValueError:
+        return "indeterminado"
+
+    if horario == "24h":
+        return "sim"
+
+    partes = horario.replace("h", "").split("-")
+
+    if len(partes) != 2 or not (partes[0].isdigit() and partes[1].isdigit()):
+        return "indeterminado"
+
+    inicio = int(partes[0])
+    fim = int(partes[1])
+
+    if inicio <= fim:
+        permitido = inicio <= hora < fim
+    else:
+        permitido = hora >= inicio or hora < fim
+
+    if permitido:
+        return "sim"
+    return "nao"
+
+
+
+
 # MONTAR O TEXTO QUE VAI PARA O AGENTE
 def montarTexto(matricula_logada, perfil):
     consultar()
     consultarAcessos()
-
-    texto = "data_hora,usuario,perfil,maquina,resultado\n"
+    
+    texto = "data_hora,usuario,perfil,horario_permitido,dentro_do_horario,maquina,resultado\n"
 
     for acesso in acessos:
 
@@ -42,12 +75,16 @@ def montarTexto(matricula_logada, perfil):
         if info:
             nome = info["nome"]
             perfil_alvo = info["perfil"]
+            horario = info["horario"]
+            dentro = dentroDoHorario(horario, acesso["data_hora"])
         else:
             nome = "desconhecido"
             perfil_alvo = "desconhecido"
+            horario = "desconhecido"
+            dentro = "indeterminado"
 
         texto += (
-            f"{acesso['data_hora']},{nome},{perfil_alvo},"
+            f"{acesso['data_hora']},{nome},{perfil_alvo},{horario},{dentro},"
             f"{acesso['maquina']},{acesso['resultado']}\n"
         )
 
