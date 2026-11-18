@@ -18,7 +18,7 @@ def pedirTexto(mensagem): #ele impede que seja colocado virgula no texto, e queb
         print("O texto não pode conter vírgulas.")
         texto = input(mensagem).strip()
     return texto
-    
+
 # CONSULTAR OS DADOS DO ARQUIVO
 def consultar(): # consultar o arquivo e atribuir em variaveis
     dados.clear()
@@ -63,13 +63,13 @@ def salvar(): # pega todos os dados e da um print no arquivo de texto
 
 
 # VERIFICAR LOGIN
-def verificar_login(nome, matricula): # parte de verificação do login 
+def verificar_login(nome, matricula): # parte de verificação do login
     consultar() # ele consulta os dados
 
-    info = dados.get(matricula) # vai atribuir info com a matricula 
+    info = dados.get(matricula) # vai atribuir info com a matricula
 
     if info and info["nome"].lower() == nome.lower(): #vai ver o perfil do usuario e retornar ele para o codigo, assimo usaurio entra no perfil certo
-        return info["perfil"].lower() 
+        return info["perfil"].lower()
 
     return None
 
@@ -91,12 +91,17 @@ def login():
 
             print("\nAcesso negado: esta máquina está bloqueada.")
 
-            return None, None # ele so nao entra no perfil caso o pc esteja usando seja bloqueado, provavelmente vou mudar essa parte enfim 
-                                #nao sei exatamente irei ver amanha com o povo 
+            return None, None # ele so nao entra no perfil caso o pc esteja usando seja bloqueado, provavelmente vou mudar essa parte enfim
+                                #nao sei exatamente irei ver amanha com o povo
 
         perfil = verificar_login(nome, matricula)
 
         if perfil in PERFIS:
+
+            if not verificarHorario(dados[matricula]["horario"]):
+                registrarAcesso(matricula, maquina, "fora_horario")
+                print("\nAcesso negado: fora do horário permitido.")
+                return None, None
 
             # Atualiza a data do último acesso
             dados[matricula]["acesso"] = agora() # so muda o horario de acesso
@@ -110,7 +115,7 @@ def login():
             return matricula, perfil
 
         # Registra a tentativa que falhou
-        registrarAcesso(matricula, maquina, "falha") # vou ver como eu vou usar isso pro suspeito e critico, mas provavekmente 
+        registrarAcesso(matricula, maquina, "falha") # vou ver como eu vou usar isso pro suspeito e critico, mas provavekmente
         #botar condicionais e é isso, faço amanha
 
         print("\nNome ou matrícula incorretos!")
@@ -152,7 +157,7 @@ def visualizarProprio(matricula): # visualização so que aluno ou professor
 
 
 # ATUALIZAR O PRÓPRIO USUÁRIO
-def atualizarProprio(matricula):  # atualização de usuario com uma permissão mais baixa do que o adm, pois nesse so consegue 
+def atualizarProprio(matricula):  # atualização de usuario com uma permissão mais baixa do que o adm, pois nesse so consegue
     limpar() # atualizar o proprio usuario
     consultar()
 

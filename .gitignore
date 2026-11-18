@@ -222,3 +222,6 @@ __marimo__/
 
 # Maquina bloqueadas
 maquina_bloqueadas.txt
+
+# Chave privada da API Groq
+.env
