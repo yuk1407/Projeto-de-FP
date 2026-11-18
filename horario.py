@@ -34,8 +34,12 @@ def verificarHorario(horario):
     if not (0 <= inicio <= 23 and 1 <= fim <= 24):
         return False
 
-    # Verifica se está dentro do horário permitido
-    if inicio <= horario_atual < fim:
-            return True
+    # Verifica horários normais (exemplo: 7h-14h)
+    if inicio < fim:
+        return inicio <= horario_atual < fim
+
+# Verifica horários que atravessam a meia-noite (exemplo: 22h-6h)
+    if inicio > fim:
+        return horario_atual >= inicio or horario_atual < fim
 
     return False
