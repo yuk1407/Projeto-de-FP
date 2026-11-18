@@ -86,7 +86,7 @@
 
 ### André Allysson
 ### Bernado Goudel
-### Matheus Luiz
+### Mateus Luiz
 ### Pedro Miguel
 ### Steven Kang Lin
 
