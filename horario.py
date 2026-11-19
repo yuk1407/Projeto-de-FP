@@ -43,3 +43,30 @@ def verificarHorario(horario):
         return horario_atual >= inicio or horario_atual < fim
 
     return False
+
+
+def validarHorario(horario):
+    horario = horario.strip().lower()
+
+    if horario == "24h":
+        return True
+
+    if "-" not in horario:
+        return False
+
+    try:
+        inicio, fim = horario.split("-", 1)
+
+        inicio = int(inicio.replace("h", "").strip())
+        fim = int(fim.replace("h", "").strip())
+
+    except ValueError:
+        return False
+
+    if not (0 <= inicio <= 23 and 0 <= fim <= 24):
+        return False
+
+    if inicio == fim:
+        return False
+
+    return True
