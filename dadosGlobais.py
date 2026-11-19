@@ -25,3 +25,5 @@ PERGUNTAS = {
         "Resuma todos os acessos."
     ]
 }
+
+RESULTADOS = ("sucesso", "falha", "bloqueado", "fora_horario")
