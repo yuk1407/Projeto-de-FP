@@ -51,17 +51,25 @@ def validarHorario(horario):
     if horario == "24h":
         return True
 
-    if "-" not in horario:
+    if horario.count("-") != 1:
         return False
 
-    try:
-        inicio, fim = horario.split("-", 1)
+    inicio, fim = horario.split("-", 1)
 
-        inicio = int(inicio.replace("h", "").strip())
-        fim = int(fim.replace("h", "").strip())
+    inicio = inicio.strip()
+    fim = fim.strip()
 
-    except ValueError:
+    if not inicio.endswith("h") or not fim.endswith("h"):
         return False
+
+    inicio = inicio[:-1]
+    fim = fim[:-1]
+
+    if not inicio.isdigit() or not fim.isdigit():
+        return False
+
+    inicio = int(inicio)
+    fim = int(fim)
 
     if not (0 <= inicio <= 23 and 0 <= fim <= 24):
         return False
