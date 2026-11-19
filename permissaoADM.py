@@ -331,6 +331,72 @@ def desbloquearMaquina():
     else:
         print("Essa máquina não está bloqueada.")
 
+
+def visualizarHistoricoIA(): #ira lista todo o historico ou pesquisa um determinado uso da ia
+    limpar()
+    consultarHistoricoIA()
+    
+    if len(historicoIA) == 0:
+        print("Não há nada no registro no historico.")
+        return
+    
+    while True:
+
+        print("""
+1. Listar
+2. Pesquisar
+""")
+        opc = input("informe um numero correspondente a opção escolhida: ")
+        if opc == '1':
+            for uso in historicoIA:
+            
+                print(f"""
+{"-" * int(len(uso['pergunta']) + 20)}
+Matricula: **{uso['matricula'][2:]}
+{"-" * int(len(uso['pergunta']) + 20)}
+Nome: {uso['nome']}
+Perfil: {uso['perfil']}
+Maquina: {uso['maquina']}
+Data e Horario: {uso['data_hora']}
+Pergunta ==>  {substituirCaractere(uso['pergunta']," ","-")}
+{"-" * int(len(uso['pergunta']) + 20)}
+""")
+                
+            break
+
+        elif opc == '2':
+            pergunta = input(
+            "Qual é a matricula do usuario que você deseja checar o historico: "
+            ).strip()
+    
+            encontrado = False
+    
+            for uso in historicoIA:
+                if uso["matricula"].lower() == pergunta.lower():
+                    print(f"""
+                    {"-" * int(len(uso['pergunta']) + 20)}
+                    Matricula: **{uso['matricula'][2:]}
+                    {"-" * int(len(uso['pergunta']) + 20)}
+                    Nome: {uso['nome']}
+                    Perfil: {uso['perfil']}
+                    Maquina: {uso['maquina']}
+                    Data e Horario: {uso['data_hora']}
+                    Pergunta ==>  {substituirCaractere(uso['pergunta']," ","-")}
+                    {"-" * int(len(uso['pergunta']) + 20)}
+                    """)
+                    encontrado = True
+
+            if encontrado == False:
+                print("não existem nenhum registro do uso da IA com essa matricula")
+    
+            if not encontrado:
+                print("O usuário não foi cadastrado.")
+            break
+        else: 
+            print("numero invalido!")
+    
+
+
 # MENU ADMINISTRADOR
 def menuADM(matricula_logada): 
     while True:
@@ -346,6 +412,7 @@ def menuADM(matricula_logada):
         print("8. Desbloquear máquina") 
         print("9. Agente de IA (perguntas prontas)")
         print("10. Agente de IA (conversa aberta)")
+        print("11. Historico do uso do agenteIA")
         print("0. Sair")
 
         opcao = input("Escolha uma opção: ")
@@ -379,7 +446,8 @@ def menuADM(matricula_logada):
 
         elif opcao == "10":
             conversarComAgenteAberto(matricula_logada)
-
+        elif opcao == "11":
+            visualizarHistoricoIA()
         elif opcao == "0":
             print("Saindo da conta...")
             break
