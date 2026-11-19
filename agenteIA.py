@@ -119,7 +119,23 @@ def conversaFechada(texto, perfil):
             print("Opção inválida.")
 
 
-# CONVERSAR COM O AGENTE
+# CONVERSA ABERTA (O ADMINISTRADOR DIGITA A PERGUNTA)
+def conversaAberta(texto):
+    print("\nDigite sua pergunta (ou digite 0 para sair).")
+
+    while True:
+        pergunta = input("Pergunta: ").strip()
+
+        if pergunta == "0":
+            break
+
+        if not pergunta:
+            print("A pergunta não pode ficar vazia.")
+            continue
+
+        falar_com_agente_texto(texto, pergunta, "SentinelaLog")
+
+
 # CONVERSAR COM O AGENTE
 def conversarComAgente(matricula_logada):
     consultar()
@@ -147,6 +163,39 @@ def conversarComAgente(matricula_logada):
         return
 
     conversaFechada(texto, perfil)
+
+
+# CONVERSAR COM O AGENTE DIGITANDO (SÓ ADMINISTRADOR)
+def conversarComAgenteAberto(matricula_logada):
+    consultar()
+
+    info = dados.get(matricula_logada)
+
+    if info is None:
+        print("Usuário não encontrado.")
+        return
+
+    perfil = info["perfil"].lower()
+
+    # a trava fica aqui dentro, e não só no menu
+    if perfil != "administrador":
+        print("Apenas administradores podem usar a conversa aberta.")
+        return
+
+    texto = montarTexto(matricula_logada, perfil)
+
+    if texto.count("\n") <= 1:
+        print("Não há acessos para enviar ao agente.")
+        return
+
+    print("Os dados de acesso vão sair do computador e serão enviados à Groq.")
+    confirmacao = input("Continuar? (s/n): ").lower().strip()
+
+    if confirmacao != "s":
+        print("Operação cancelada.")
+        return
+
+    conversaAberta(texto)
 
 if __name__ == "__main__":
     matricula = input("Matrícula: ").strip()

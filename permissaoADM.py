@@ -344,7 +344,8 @@ def menuADM(matricula_logada):
         print("6. Criar relatório")
         print("7. Bloquear máquina") 
         print("8. Desbloquear máquina") 
-        print("9. Agente de IA") 
+        print("9. Agente de IA (perguntas prontas)")
+        print("10. Agente de IA (conversa aberta)")
         print("0. Sair")
 
         opcao = input("Escolha uma opção: ")
@@ -375,6 +376,9 @@ def menuADM(matricula_logada):
 
         elif opcao == "9":
             conversarComAgente(matricula_logada)
+
+        elif opcao == "10":
+            conversarComAgenteAberto(matricula_logada)
 
         elif opcao == "0":
             print("Saindo da conta...")
