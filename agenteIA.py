@@ -155,9 +155,13 @@ def montarTexto(matricula_logada, perfil):
         )
 
     texto3 = f"""
+    quem esta usando agora : Nome > {dados[matricula_logada]['nome']} | perfil {perfil}
     1 - caso a pergunta pedir alguma coisa relacionada a matratricula,fale que voce não tem acesso a matricula 
     e que é para o usuario verificar a matricula manualmente
-    2 - quantidade de matriculas: {len(dados)}
+    2 - quantidade de matriculas: {len(dados)} -> essa informação da quantidade de matriculas ou da quantidade de pessoas cadastradas pode ser dita e so administrador tem acesso
+    o que definitivamente não pode ser dito é o valor da matricula, para isso obedeça o item 1 (o item de cima).
+    3- obedeça a hierarquia, um estudante não pode saber coisas de professor e de administrador e o professor não pode ver coisas de 
+    administrador. o adiministrador pode ver tudo, o professor so pode ver dados dele mesmo e de todos os alunos, e o aluno so pode ver dados dele mesmo.
     """
 
     texto4 = "maquinas bloqueadas:\n"
