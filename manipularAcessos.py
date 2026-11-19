@@ -1,6 +1,7 @@
 from dadosGlobais import *
 from crud import *
 from horario import *
+from datetime import datetime
 
 # TODAS AS FUNÇÕES QUE CONTROLAM O ACESSO ESTÃO AQUI 
 
@@ -19,6 +20,15 @@ def consultarAcessos(): # so vai pegar o acesso da pessoa, importante pra parte 
                     continue
 
                 matricula, data_hora, maquina, resultado = partes
+
+                # descarta linhas com resultado desconhecido (inclui linhas forjadas com vírgulas)
+                if resultado not in RESULTADOS:
+                    continue
+                # descarta linhas com data inválida
+                try:
+                    datetime.strptime(data_hora, "%d/%m/%Y %H:%M:%S")
+                except ValueError:
+                    continue
 
                 acessos.append({
                     "matricula": matricula,

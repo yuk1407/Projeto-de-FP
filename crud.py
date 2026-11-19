@@ -7,7 +7,14 @@ from horario import *
 #AQUI TEM TODAS AS FUNÇÕES DO CRUD EM SI E AS FUNÇÕES REFERENTE AS PERMISSÕES DE ALUNOS E PROFESSORES
 #OBIVIAMENTE OS DE ADM NÃO ESTÃO AQUI
 
+# VALIDAR MATRÍCULA (SÓ NÚMEROS, DE 4 A 20 DÍGITOS)
+def matriculaValida(texto):
+    return texto.isdigit() and 4 <= len(texto) <= 20
 
+def tirarEspacos(texto):
+    return texto.replace(" ","")
+def substituirCaractere(texto,novo,caractere = " "):
+    return texto.replace(caractere,novo)
 # LIMPAR TERMINAL
 def limpar():
     os.system("cls" if os.name == "nt" else "clear")
@@ -26,13 +33,9 @@ def consultar(): # consultar o arquivo e atribuir em variaveis
     try:
         with open("arquivos.txt", "r", encoding="utf8") as arquivo:
             for linha in arquivo:
-                partes = linha.strip().split(",", 6)
+                partes = linha.strip().split(",", 5)
 
-                if len(partes) == 7:
-                    # Formato antigo: possui máquina no cadastro
-                    matricula, nome, perfil, horario, acesso, maquina_antiga, observacoes = partes
-
-                elif len(partes) == 6:
+                if len(partes) == 6:
                     # Formato novo: não possui máquina fixa
                     matricula, nome, perfil, horario, acesso, observacoes = partes
 
@@ -85,6 +88,9 @@ def login():
 
         maquina = identificarMaquina()
 
+        # só números entram no log; qualquer outra coisa vira "invalida"
+        matricula_log = matricula if matriculaValida(matricula) else "invalida"
+
         # bloqueia o acesso se a máquina estiver na lista de bloqueadas
         if maquinaBloqueada(maquina):
             registrarAcesso(matricula, maquina, "bloqueado")
@@ -108,14 +114,14 @@ def login():
             salvar()
 
             # Registra o acesso bem-sucedido
-            registrarAcesso(matricula, maquina, "sucesso")
+            registrarAcesso(matricula_log, maquina, "sucesso")
 
             print("\nLogin realizado com sucesso!")
 
             return matricula, perfil
 
         # Registra a tentativa que falhou
-        registrarAcesso(matricula, maquina, "falha") # vou ver como eu vou usar isso pro suspeito e critico, mas provavekmente
+        registrarAcesso(matricula_log, maquina, "falha") # vou ver como eu vou usar isso pro suspeito e critico, mas provavekmente
         #botar condicionais e é isso, faço amanha
 
         print("\nNome ou matrícula incorretos!")
@@ -169,8 +175,8 @@ def atualizarProprio(matricula):  # atualização de usuario com uma permissão 
 
     print("\nDeixe vazio para manter o dado atual.")
 
-    nome = input(f"Nome ({info['nome']}): ")
-    observacoes = input(
+    nome = pedirTexto(f"Nome ({info['nome']}): ")
+    observacoes = pedirTexto(
         f"Observações ({info['observacoes']}): "
     )
 

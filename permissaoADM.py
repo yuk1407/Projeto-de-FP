@@ -40,11 +40,11 @@ def primeiro_acesso(): # essa parte é so necessaria se nao tiver informação n
 
 
 
-    nome = input("Nome do administrador: ").strip()
+    nome = pedirTexto("Nome do administrador: ").strip()
 
     while not nome:
         print("O nome não pode ficar vazio.")
-        nome = input("Nome do administrador: ").strip()
+        nome = pedirTexto("Nome do administrador: ").strip()
 
     matricula = str(matricula)
 
@@ -90,18 +90,19 @@ def registrar():
         print("O nome não pode ficar vazio.")
         nome = pedirTexto("Nome: ")
 
-    perfil = input(
+    perfil = pedirTexto(
         "Perfil (estudante, professor, administrador): "
     ).lower().strip()
 
     while perfil not in PERFIS:
         print("Perfil inválido.")
-        perfil = input(
+        perfil = pedirTexto(
             "Perfil (estudante, professor, administrador): "
         ).lower().strip()
 
     while True:
-        horario = pedirTexto("Horário permitido (ex: 7h-18h ou 24h): ")
+        horario = pedirTexto("Horário permitido (ex: 7h-18h ou 24h): ").lower()
+        horario = tirarEspacos(horario)
 
         if validarHorario(horario):
             break
@@ -150,7 +151,7 @@ def atualizarADM(matricula_logada): # adm atualizar blah blah blah
     limpar()
     consultar()
 
-    matricula = input(
+    matricula = pedirTexto(
         "Digite a matrícula do usuário que deseja atualizar: "
     ).strip()
 
@@ -162,7 +163,7 @@ def atualizarADM(matricula_logada): # adm atualizar blah blah blah
 
     print("\nDeixe vazio para manter o dado atual.")
 
-    nome = input(f"Nome ({info['nome']}): ")
+    nome = pedirTexto(f"Nome ({info['nome']}): ")
 
     # Impede que o administrador altere o próprio perfil
     if matricula == matricula_logada:
@@ -170,12 +171,13 @@ def atualizarADM(matricula_logada): # adm atualizar blah blah blah
         perfil = ""
 
     else:
-        perfil = input(
+        perfil = pedirTexto(
             f"Perfil ({info['perfil']}): "
         ).lower().strip()
 
-    horario = input(f"Horário ({info['horario']}): ")
-    observacoes = input(
+    horario = pedirTexto(f"Horário ({info['horario']}): ").lower()
+    horario = tirarEspacos(horario)
+    observacoes = pedirTexto(
         f"Observações ({info['observacoes']}): "
     )
 
@@ -342,7 +344,8 @@ def menuADM(matricula_logada):
         print("6. Criar relatório")
         print("7. Bloquear máquina") 
         print("8. Desbloquear máquina") 
-        print("9. Agente de IA") 
+        print("9. Agente de IA (perguntas prontas)")
+        print("10. Agente de IA (conversa aberta)")
         print("0. Sair")
 
         opcao = input("Escolha uma opção: ")
@@ -373,6 +376,9 @@ def menuADM(matricula_logada):
 
         elif opcao == "9":
             conversarComAgente(matricula_logada)
+
+        elif opcao == "10":
+            conversarComAgenteAberto(matricula_logada)
 
         elif opcao == "0":
             print("Saindo da conta...")
