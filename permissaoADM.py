@@ -3,6 +3,7 @@ from crud import *
 from relatorio import *
 from maquinasBloqueadas import *
 from agenteIA import *
+from horario import validarHorario
 
 #AQUI TEM TODAS AS FUNÇÕES COM PERMISSÃO DE ADM
 #TODA FUNÇÃO QUE ESTIVER RELACIONADO A UMA CONTA ADM PRECISA ESTAR AQUI
@@ -99,7 +100,13 @@ def registrar():
             "Perfil (estudante, professor, administrador): "
         ).lower().strip()
 
-    horario = pedirTexto("Horário permitido (ex: 7h-18h): ") # vou mexer nessa bomba dps, nao deve ser dificil a verificação 
+    while True:
+        horario = pedirTexto("Horário permitido (ex: 7h-18h ou 24h): ")
+
+        if validarHorario(horario):
+            break
+
+        print("Horário inválido. Tente novamente.") 
     observacoes = pedirTexto("Observações (opcional): ")
 
     dados[matricula] = {
@@ -183,7 +190,11 @@ def atualizarADM(matricula_logada): # adm atualizar blah blah blah
             print("Perfil inválido. Mantido o atual.")
 
     if horario.strip():
-        info["horario"] = horario.strip()
+        if validarHorario(horario):
+            info["horario"] = horario.strip()
+        else:
+            print("Horário inválido. Mantido o horário atual.")
+
 
     if observacoes.strip():
         info["observacoes"] = observacoes.strip()
