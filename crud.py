@@ -13,6 +13,8 @@ def matriculaValida(texto):
 
 def tirarEspacos(texto):
     return texto.replace(" ","")
+def substituirCaractere(texto,novo,caractere = " "):
+    return texto.replace(caractere,novo)
 # LIMPAR TERMINAL
 def limpar():
     os.system("cls" if os.name == "nt" else "clear")

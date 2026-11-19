@@ -1,10 +1,67 @@
 from dadosGlobais import *
-from crud import consultar
+from crud import consultar, substituirCaractere
 from manipularAcessos import consultarAcessos
 from agente import falar_com_agente_texto
 from datetime import datetime
+from horario import agora
 from horario import verificarHorario
+from maquinasBloqueadas import *
 
+# REGISTRAR CADA TENTATIVA DE ACESSO
+def registrarInteracaoIA(matricula, pergunta): # vai registrar cada uso da ia 
+
+    info = dados.get(matricula)
+   
+    interacao = {
+        "matricula": matricula,
+        "pergunta": substituirCaractere(pergunta,"-"),
+        "data_hora": agora(),
+        "maquina": identificarMaquina(),
+        "nome" : info['nome'],
+        "perfil" : info['perfil']
+
+    }
+
+    historicoIA.append(interacao)
+
+    with open("historicoIA.txt", "a", encoding="utf8") as arquivo:
+        arquivo.write(
+            f"{interacao['matricula']},{interacao['pergunta']},"
+            f"{interacao['maquina']},{interacao['data_hora']},"
+            f"{interacao['nome']},{interacao['perfil']}\n"
+        )
+
+def consultarHistoricoIA(): #vai consultar todo o historico do uso da IA
+    
+    historicoIA.clear()
+
+    try:
+        with open("historicoIA.txt", "r", encoding="utf8") as arquivo:
+            for linha in arquivo:
+                partes = linha.strip().split(",", 5)
+
+                if len(partes) != 6:
+                    continue
+
+                matricula, pergunta, maquina, data_hora, nome, perfil  = partes
+
+                # descarta linhas com data inválida
+                try:
+                    datetime.strptime(data_hora, "%d/%m/%Y %H:%M:%S")
+                except ValueError:
+                    continue
+
+                historicoIA.append({
+                    "matricula": matricula,
+                    "pergunta": pergunta,
+                    "maquina": maquina,
+                    "data_hora" :data_hora,
+                    "nome": nome,
+                    "perfil": perfil
+                })
+
+    except FileNotFoundError:
+        pass
 
 # REGRA DE PERMISSÃO: QUEM PODE VER OS ACESSOS DE QUEM
 def podeVer(perfil, matricula_logada, matricula_alvo):
@@ -62,6 +119,7 @@ def dentroDoHorario(horario, data_hora):
 def montarTexto(matricula_logada, perfil):
     consultar()
     consultarAcessos()
+    consultarHistoricoIA()
     
     texto = "data_hora,usuario,perfil,horario_permitido,dentro_do_horario,maquina,resultado\n"
 
@@ -88,11 +146,19 @@ def montarTexto(matricula_logada, perfil):
             f"{acesso['maquina']},{acesso['resultado']}\n"
         )
 
-    return texto
+    texto2 = "data_hora,nome,perfil,maquina,pergunta\n"
+
+    for uso in historicoIA:
+        texto2 += (
+            f"{uso['data_hora']},{uso['nome']},{uso['perfil']},{uso['maquina']},{uso['pergunta']}\n"
+        )
+
+
+    return f"tentativas de login:\n{texto}\n {"-" * 60}\nhistorico do uso de IA:\n{texto2}"
 
 
 # CONVERSA FECHADA (PERGUNTAS PRONTAS)
-def conversaFechada(texto, perfil):
+def conversaFechada(texto, perfil,matricula_logada):
     perguntas = PERGUNTAS.get(perfil, [])
 
     if not perguntas:
@@ -115,12 +181,14 @@ def conversaFechada(texto, perfil):
         if opcao.isdigit() and 1 <= int(opcao) <= len(perguntas):
             pergunta = perguntas[int(opcao) - 1]
             falar_com_agente_texto(texto, pergunta, "SentinelaLog")
+            registrarInteracaoIA(matricula_logada,pergunta)
+
         else:
             print("Opção inválida.")
 
 
 # CONVERSA ABERTA (O ADMINISTRADOR DIGITA A PERGUNTA)
-def conversaAberta(texto):
+def conversaAberta(texto,matricula_logada):
     print("\nDigite sua pergunta (ou digite 0 para sair).")
 
     while True:
@@ -134,6 +202,7 @@ def conversaAberta(texto):
             continue
 
         falar_com_agente_texto(texto, pergunta, "SentinelaLog")
+        registrarInteracaoIA(matricula_logada,pergunta)
 
 
 # CONVERSAR COM O AGENTE
@@ -162,7 +231,7 @@ def conversarComAgente(matricula_logada):
         print("Operação cancelada.")
         return
 
-    conversaFechada(texto, perfil)
+    conversaFechada(texto, perfil,matricula_logada)
 
 
 # CONVERSAR COM O AGENTE DIGITANDO (SÓ ADMINISTRADOR)
@@ -195,8 +264,4 @@ def conversarComAgenteAberto(matricula_logada):
         print("Operação cancelada.")
         return
 
-    conversaAberta(texto)
-
-if __name__ == "__main__":
-    matricula = input("Matrícula: ").strip()
-    conversarComAgente(matricula)
+    conversaAberta(texto,matricula_logada)

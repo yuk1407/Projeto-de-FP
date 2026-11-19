@@ -4,6 +4,7 @@
 dados = {}
 acessos = [] #variável que guarda o histórico de tentativas de login 
 bloqueadas = []  #  lista de máquinas bloqueadas
+historicoIA = [] # lista que vai guardar cada interação com a IA
 
 PERFIS = ("estudante", "professor", "administrador")
 
@@ -22,7 +23,9 @@ PERGUNTAS = {
         "Quais acessos são suspeitos?",
         "Qual usuário tem mais falhas de login?",
         "Quais máquinas foram usadas por mais de uma pessoa?",
-        "Resuma todos os acessos."
+        "Resuma todos os acessos.",
+        "Informe o histórico do uso da IA.",
+        "Quais perguntas são suspeitas ?"
     ]
 }
 
