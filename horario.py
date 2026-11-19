@@ -38,7 +38,7 @@ def verificarHorario(horario):
     if inicio < fim:
         return inicio <= horario_atual < fim
 
-# Verifica horários que atravessam a meia-noite (exemplo: 22h-6h)
+# Verifica horários que passam pela a meia-noite (exemplo: 22h-6h)
     if inicio > fim:
         return horario_atual >= inicio or horario_atual < fim
 
