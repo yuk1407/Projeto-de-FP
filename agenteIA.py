@@ -120,6 +120,7 @@ def montarTexto(matricula_logada, perfil):
     consultar()
     consultarAcessos()
     consultarHistoricoIA()
+    consultarBloqueadas
     
     texto = "data_hora,usuario,perfil,horario_permitido,dentro_do_horario,maquina,resultado\n"
 
@@ -153,8 +154,18 @@ def montarTexto(matricula_logada, perfil):
             f"{uso['data_hora']},{uso['nome']},{uso['perfil']},{uso['maquina']},{uso['pergunta']}\n"
         )
 
+    texto3 = f"""
+    1 - caso a pergunta pedir alguma coisa relacionada a matratricula,fale que voce não tem acesso a matricula 
+    e que é para o usuario verificar a matricula manualmente
+    2 - quantidade de matriculas: {len(dados)}
+    """
 
-    return f"tentativas de login:\n{texto}\n {"-" * 60}\nhistorico do uso de IA:\n{texto2}"
+    texto4 = "maquinas bloqueadas:\n"
+    for maquina in bloqueadas:
+        texto4 += (f"{maquina}\n")
+
+
+    return f"tentativas de login:\n{texto}\n {"-" * 60}\nhistorico do uso de IA:\n{texto2}\n{"_" * 60}\n{texto4}\n\n{texto3}"
 
 
 # CONVERSA FECHADA (PERGUNTAS PRONTAS)

@@ -48,15 +48,22 @@
 
 ![Arquivos](Imagens/Arquivos.png)
 
-## Relatório
+## Relatório.txt
 ### Nessa área colocamos os seguintes dados :
 ### Matrícula, Nome, Perfil, Acesso, Máquinas, Status, Observações e Motivo(Status)
 
 ![Relatório](Imagens/Relatorio.png)
 
+## maquinas_bloqueadas.txt 
+### Nessa área so contem a lista de maquinas bloqueadas
+
+## historicoIA.txt
+### Nessa área colocamos os seguintes dados:
+### Matricula, A pergunta que foi enviada para o agenteIA, Maquinas, data e horario , nome e o perfil
+
 ## IA - Groq
 
-### Utilizar um agente de IA é um dos focos do nosso projeto. A utilidade da inteligencia artificial no trabalho que produzimos é adiantar o serviço de buscas "Globais", por exemplo, se o ADM quiser saber a quantidade de matrículas realizadas, ele pode pedir para a IA e ela lhe dará esse resultado.
+### Utilizar um agente de IA é um dos focos do nosso projeto. A utilidade da inteligencia artificial no trabalho que produzimos é adiantar o serviço de buscas "Globais", por exemplo, se o ADM quiser saber alguma determinada informação de maneira rápida, ele pode pedir para a IA e ela lhe dará esse resultado.
 
 ### A depender da sua posição no sistema, se você for estudante ou professor, terá acesso restrito aos dados que a IA poderá lhe passar.
 
@@ -78,10 +85,14 @@
 - Utilizamos dicionário para que todos os dados de um usuário estejam linkados com a sua matrícula
 
  ### 3. Consulta da IA
-- A presença da IA está para conseguir pegar informações necessária às ações do ADM
-- Pegar a quantidade de matrículas, nome atrelado a essa matrícula, informar máquinas bloqueadas, máquinas suspeitas etc...
+- A presença da IA está para conseguir pegar informações necessária às ações do ADM 
+- Pegar a quantidade de matrículas, informar máquinas bloqueadas, máquinas suspeitas etc...
+- Ela foi pensada de maneira que não ocorra nenhum problema de segurança, portanto o agente não tem acesso a nenhuma matricula 
 - A hierarquia também está presenta no uso da IA
 - A IA ja possui algumas perguntas ja feitas, como "Qual usuários tem mais falhas de login?".
+- O estudante e o professor tem acesso a IA de maneira limitada, so tem acesso a perguntas ja prontas
+- O ADM tem um chat so dele, onde consegue fazer qualquer pergunta fora as que ja tem pronta
+- Toda interação com a IA é documentada
 
 # Grupo:
 
